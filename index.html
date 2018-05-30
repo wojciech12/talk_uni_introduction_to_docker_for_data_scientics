@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>SGH - Docker</title>
+
+		<meta name="description" content="Continuous integration z wykorzystaniem lekkiej wirtualizacji Dockera oraz aplikacji Jenkins">
+
+		<meta name="author" content="Wojciech Barczynski">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css" />
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<link rel="stylesheet" href="my-ext/prism/prism.css">
+		<style>
+			pre[class*="language-"] {border-left:0px; overflow:hidden} 
+		</style>
+
+		<!-- nomnoml for drawing UML -->
+		<script src="my-ext/nomnoml/lodash.min.js"></script>
+		<script src="my-ext/nomnoml/nomnoml.js"></script>
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				
+			<section data-markdown>
+				<script type="text/template">
+## Docker && Containers 
+
+Wojciech Barczyński
+				</script>
+			</section>
+
+			<section>
+				<h4>O mnie</h4>
+				<ul>
+					<li>Lead Software Developer @ SMACC</li>
+					<li>Machine Learning / AI for finanse departaments</li>
+					<li>12 years of experience</li>
+					<li>Contact:</li>
+				</ul>
+			</section>
+
+<!-- 
+Continuous integration z wykorzystaniem lekkiej wirtualizacji Dockera oraz aplikacji Jenkins
+-->
+        <!-- section id="themes">
+          <h2>Themes</h2>
+          <p>
+            reveal.js comes with a few themes built in: <br>
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
+            <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
+          </p>
+        </section -->
+
+        <section>
+          <h3>Docker</h3>
+          <img src="img/docker.png" width="60%" />
+        </section>
+		
+        <section>
+          <h3>IT Now, DevOps, Data Scientists</h3>
+          <img src="img/dockerize_everything.jpg" width="60%" />
+        </section>
+
+		<section>
+			<h3>Why?</h3>
+			<ul>
+				<li>Your app, your tool with all dependencies</li>
+				<li>Blazing fast deployments</li>
+				<li>Lightweight virtualization</li>
+				<li>Good cli</li>
+				<li>Best way to start with new tech</li>
+				<li>Great community</li>
+			</ul>	
+		</section>
+
+		<section>
+		<h3>Docker</h3>
+			<div>
+				<div class='left' style='float:left;width:40%'>
+		<img src="img/01-docker-container.jpg" />
+		</div>
+		<div class='right' style='float:right;width:60%; margin: 0 auto;'>
+			<ul>
+				<li>Standard for Container Images</li>
+				<li>Smart layered file system</li>
+				<li>Simpler CLI for containers</li>
+			</ul>
+		</div>
+	</div>
+	</section>
+
+    <section>
+      <h3>From VM to Container</h3>
+      <img src="img/vmware_virtualized.jpg" style="border:0px; width:60%; " />
+    </section>
+	
+    <section>
+      <h3>From VM to Container</h3>
+      <img src="img/vm_vs_container.png" style="border:0px; width:60%; " />
+    </section>
+
+    <section>
+      <h3>From VM to Container</h3>
+      <img src="img/rubber_duck_swarm.jpg" style="border:0px; width:60%; " />
+    </section>
+
+    <section>
+      <h3>Containers</h3>
+	  <ul>
+		 <li>Isolation of VM [*]</li>
+		 <li>Speed and simplicity of Process</li>
+		 <li>Docker - bring the tech for masses </li>
+		 <li>Docker - smart layered filesystem</li>
+	  </ul><br/>
+	  <small>* - ...</small>
+    </section>
+	
+	<section>
+		<h3>How to works</h3>
+		<ol>
+			<li>Have your code ready to ship*</li>
+			<li>Define your Dockerfile</li>
+			<li>Build your Docker Image</li>
+		</ol><br />
+		
+		<small>[*] 12factor apps</small>
+	</section>
+
+	<section>
+		<h3>How to works</h3>
+		<ol start="4">
+			<li>Ship it to a repository</li>
+			<li>Run in production, staging, on your colleague's laptop</li>
+		</ol>
+	</section>
+
+		<section>
+			<h3>Dockerfile - simple</h3>
+			<pre><code>FROM python:3.6-slim-jessie
+
+WORKDIR /app
+
+
+ADD requirements.txt /app/requirements.txt
+
+RUN apt-get update && \
+    apt-get install -qq locales-all poppler-utils imagemagick && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install -r /app/requirements.txt --cache-dir /pip-cache
+
+ADD model /app/model						
+ADD . /app
+
+ENTRYPOINT python /app/main.py</code></pre>			
+		</section>
+		
+		
+			<section>
+				<h3>Dockerfile - layers</h3>
+				<img src="img/docker_layers_0.svg" />
+			</section>
+
+			<section>
+				<h3>Dockerfile - layers</h3>
+				<img src="img/docker_layers_1.svg" />
+			</section>
+
+			<section>
+				<h3>Dockerfile - layers</h3>
+				<ul>
+					<li>First deployment might be long</li>
+					<li>Next one blazing fast!*</li>
+				</ul><br /><br />
+<small>* depending which layer you upgrade</small>
+			</section>
+
+		<section>
+			<h2>Commands</h2>
+			<pre><code  class="language-bash">docker build -t my_ml_app .
+docker start --name my_dev_app my_ml_app
+
+# notebook
+docker run  -p 8888:8888 jupyter/scipy-notebook</code></pre>
+		</section>
+
+		<section>
+			<h3>Dependency hell no more</h3>
+			<h5>Docker Image has it all!</h5>
+			<ul>
+				<li>Configs</li>
+				<li>Libraries</li>
+				<li>OS Libraries</li>
+			</ul>
+			<br />
+			<small>pss..we move the hell to the build time</small>
+		</section>
+
+		<section>
+			<h3>Perfect tech for sharing tools</h3>
+			<img src="img/it-works-on-my-machine.jpg" />
+		</section>
+
+		<section>
+			<h3>Perfect tech for sharing tools</h3>
+			<img src="img/say-one-more-time-it-works-on-my-machine.jpg" />
+		</section>
+
+		<section>
+			<h3>Deployment</h3>
+			<ul>
+				<li>You run exactly what you build in your staging and production</li>
+				<li>Blazing fast deployments</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Amazing Docker-based deployment</h3>
+			<ul>
+				<li>Kubernetes, Mesos make scaling easy.</li>
+				<li>Managed Kubernetes is on Amazon, Google and Azure with Graphic Card support.</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Easy to install and use</h3>
+			<ul>
+				<li>You want to start with new tech</li>
+				<li>No time to learn how to setup</li>
+				<li>...</li>
+				<li>There must be docker that works our of the box!</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Easy to install and use</h3>
+			Docker approach:
+			<ul>
+				<li>Docker must be runnable</li>
+				<li>Docker must be configured out of the box</li>
+				<li>Community put extra care to make it easy</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Example</h3>
+			<h6>datascience-notebook</h6>
+			<ul>
+				<li>Check <a href="http://jupyter-docker-stacks.readthedocs.io/en/latest/index.html">docs</a></li>
+				<li><code>docker run  -p 8888:8888 jupyter/scipy-notebook</code></li>
+				<li>3 minutes later</li>
+				<li>notebook ready to use</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Best practise</h3>
+			<p>Secure web server (<a href="https://hub.docker.com/r/marvambass/nginx-ssl-secure/">nginx</a>)</p>
+
+			<pre><code class="language-bash" style="text-align: left">docker run -d \
+-p 80:80 -p 443:443 \
+-e 'DH_SIZE=512' \
+marvambass/nginx-ssl-secure</code></pre><br />
+			<small>Delegate boring things. Fast start.</small>
+		</section>
+
+		<section>
+			<h3>Alternative</h3>
+			<ul>
+				<li>A lot of installation</li>
+				<li>A lot of time to understand nuances</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Simplier Integration Tests</h3>
+			<ul>
+				<li>Need to test against mongodb?</li>
+				<li>Run it with docker in your CI/CD or locally</li>
+			</ul>
+		</section>
+
+      <section>
+        <h3>Catalog</h3>
+        <p>Kitematic</p>
+        <img src="img/kitematic_screenshot.png" />
+      </section>
+
+
+        <section>
+          <h3>Docker</h3>
+
+          <pre>
+          --------           -----------         ------------
+         | Data   |         | Developer |       | Deployment |
+         | Scient | ------- |           | ----> |            |
+          --------           -----------         ------------
+          
+          <------------- cut complexity ASAP ----------- 
+          </pre>
+          <p>all the artifacts should go to the component git</p>
+        </section>
+
+		<section>
+		<h3>Much more ahead :)</h3>
+		<ul>
+			<li>Building docker efficient - size</li>
+			<li>Init processes inside Docker</li>
+			<li>Where to put models?</li>
+			<li>Testing and Validating</li>
+			<li>12factor apps</li>
+			<li>Working with kubernetes</li>
+		</ul>
+	</section>
+
+	<section>
+		<h3>Much more ahead :)</h3>
+		<ul>
+			<li>How to migrate to containers existing systems</li>
+			<li>Security</li>
+		</ul>
+	</section>
+
+      <!-- section>
+        <h3>Uruchamianie aplikacji na każdym etapie</h3>
+        <pre><code class="language-bash"># dev
+docker run 'VAULT_ADDRESS=127.0.0.1:8200' -p 8200:8200 vault
+# testy integracyjne
+docker run 'VAULT_ADDRESS=vaultA:8200' -p 8200:8200 vault
+# prod
+docker run 'VAULT_ADDRESS=vault.consul:8200' -p 8200:8200 vault</code></pre>
+      </section -->
+
+
+    <section data-markdown>
+      <script type="text/template">
+## Thank you
+## Dziękuje za Uwagę
+    </script>
+  </section>
+  
+
+		<section>
+			<h3>Backup</h3>
+		</section>
+
+
+      <section>
+        <h3>Deployment</h3>
+        <p>Kubernetes:</p>
+        <pre><code class="language-yml">spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: mywebapp
+        role: mywebapp
+        tier: frontend
+    spec:
+      containers:
+        - name: mywebapp
+          image: eu.gcr.io/mycompany/mywebapp:v0.4.0
+          env:
+            - name: LISTEN_PORT
+              value: "80"
+          ports:
+            - containerPort: 80</code></pre>
+      </section>
+
+
+    <section data-markdown>
+      <script type="text/template">
+### Jak zainstalować
+
+- Zainstaluj Docker for <a href="https://docs.docker.com/engine/installation/linux/ubuntulinux/">Linux</a>/<a href="https://docs.docker.com/engine/installation/mac/">Mac</a>/<a href="https://docs.docker.com/engine/installation/windows/">Windows</a>
+- Wystartuj swojego pierwszego dockera: <pre><code> docker run -p 8081:80  nginx</code></pre>
+- Sprawdz czy dziala:  <pre><code>curl 127.0.0.1:8081
+docker ps
+dokcer images</code></pre>
+    </script>
+    <!-- https://blog.docker.com/2015/04/tips-for-deploying-nginx-official-image-with-docker/ -->
+    </section>
+
+    <!--
+      Kubernetes (k8s) jest środowiskiem do uruchamiania docker-ów 
+      Minikube pozwala uruchomić w wersji na jedną instację i pobawienie się 
+      funkcjami k8s
+    -->
+        <!-- section>
+          <h4>Minikube</h4>
+          <a href="http://kubernetes.io/docs/getting-started-guides/minikube/">minikube</a>
+          <pre><code class="language-bash">kubectl config use-context minikube
+kubectl get pods --all-namespaces
+kubectl get nodes
+./minikube dashboard
+eval $(./minikube docker-env)</code></pre>
+        </section -->
+
+        <!-- section>
+          <h4>Minikube</h4>
+          <pre><code class="language-bash">
+# run - it will create a deployment
+kubectl run hello-minikube --image=gcr.io/google_containers/echoserver:1.4 --port=8080
+kubectl get pods --all-namespaces
+kubectl expose deployment hello-minikube --type=NodePort
+kubectl get svc --all-namespaces
+# access the service
+curl $(./minikube service hello-minikube --url)
+</code></pre>
+        </section -->
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					// { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'my-ext/prism/prism.js', async: false }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
